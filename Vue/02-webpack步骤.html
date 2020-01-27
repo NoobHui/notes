@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>02-webpack步骤-改造</title>
+  <!-- <link rel="stylesheet" href="lib/css/monokai-sublime.css"> -->
+  <link rel="stylesheet" href="lib/css/default.min.css">
+  <link rel="stylesheet" href="lib/css/vs2015.css">
+  <link rel="stylesheet" href="lib/css/zTreeStyle/zTreeStyle.css">
+  <link rel="stylesheet" href="lib/css/base.css">
+  <link rel="stylesheet" href="lib/css/index.css">
+</head>
+
+<body>
+  <div style='width:25%;'>
+    <ul id="tree" class="ztree" style='width:100%'>
+
+    </ul>
+  </div>
+  <div id='readme' style='width:70%;margin-left:20%;'>
+    <article class='markdown-body'><h1 id="webpack-">webpack 使用步骤 (最新版)</h1>
+<h2 id="webpack-">webpack 第一阶段</h2>
+<h3 id="-">命名初始化阶段</h3>
+<blockquote>
+<p>项目名不能有汉字,不能取名叫 webpack</p>
+</blockquote>
+<ol>
+<li>创建项目名称并生成 <code>package.json</code>, 命令 : <code>npm init -y</code></li>
+<li>安装 : <code>npm i -D webpack webpack-cli</code></li>
+</ol>
+<pre><code class="lang-js">webpack  : 是 webpack 工具的核心包
+webpack-cli : 提供了一些在终端中使用的命令
+-D(--save-dev) : 表示项目开发期间的依赖,也就是 : 线上代码中用不到这些包了
+</code></pre>
+<ol start="3">
+<li>创建一个<code>main.js</code>文件</li>
+</ol>
+<pre><code class="lang-js">console.log(&#39;我就要被打包了,哦也&#39;);
+</code></pre>
+<ol start="4">
+<li>在 <code>package.json</code>的<code>scripts</code>中,添加脚本</li>
+</ol>
+<pre><code class="lang-js"> &quot;scripts&quot;: {
+    &quot;build&quot;: &quot;webpack main.js&quot;
+  },
+// webpack 是webpack-cli 中提供的命令, 用来实现打包的
+// ./main.js 入口文件,要打包哪个文件
+</code></pre>
+<ol start="5">
+<li>运行 : <code>npm run build</code></li>
+<li>设置开发状态 : <code>mode</code></li>
+</ol>
+<pre><code class="lang-js">&quot;build&quot; : &quot;webpack ./main.js --mode development&quot;
+
+// WARNING in configuration
+// The &#39;mode&#39; option has not been set, webpack will fallback to &#39;production&#39; for this value.
+// 如果没有设置 mode 配置项, webpack 会默认提供 开发环境(production)
+
+// Set &#39;mode&#39; option to &#39;development&#39; or &#39;production&#39; to enable defaults for each environment.
+// 项目开发的两种环境
+  1. 开发环境 (development) : 开发过程就是开发环境
+  2. 生产环境 (production) : 线上环境, 也就是 : 项目做好了,发布上线
+  生产环境下, 打包生产的js文件都是压缩后的,  开发环境下代码一般是不压缩的
+</code></pre>
+<h3 id="-">隔行变色案例</h3>
+<ol>
+<li>创建 <code>src/index.html</code> </li>
+<li>隔行案例 =&gt; <code>html =&gt; ul#list&gt;li{我是 li \$}\*10</code></li>
+<li>安装 juqery : <code>npm i jquery</code>, 并且引入 <code>jquery</code></li>
+<li>暂时引入 <code>main.js</code> , 在 main.js 里写入</li>
+</ol>
+<pre><code class="lang-js">// 使用ES6的模块化语法
+import $ from &#39;jquery&#39; // 优点 不用沿着路径去找
+
+$(&#39;#list &gt; li:odd&#39;).css(&#39;backgroundColor&#39;, &#39;red&#39;)
+$(&#39;#list &gt; li:even&#39;).css(&#39;backgroundColor&#39;, &#39;green&#39;)
+// 语法报错
+</code></pre>
+<ol start="5">
+<li>问题 :</li>
+</ol>
+<pre><code class="lang-js">// 引入 main.js 会报错,因为浏览器不支持这个import 的Es6语法
+// npm run build 之后
+//  引入 dist/main.js 后会ok,因为webpack 帮我们转化为浏览器能够识别的es5语法了
+</code></pre>
+<ol start="6">
+<li>历程 :</li>
+</ol>
+<pre><code class="lang-js">//1. 如果index.html 中引入 jquery , 再引入 mian.js (没有引入jquery了) =&gt; ok
+//2. 如果index.html 中没有引入 jquery , 直接使用es6的模块化语法 import , 引入main.js就会报错
+//3. 如果index.html 中没有引入 jquery , 直接使用es6的模块化语法 import , webapck打包出 dist/main.js 引入 dist/main.js  ==&gt; ok
+</code></pre>
+<ol start="7">
+<li><p>为什么 <code>dist文件下的main.js</code> 文件里的代码突然这么多</p>
+<blockquote>
+<p>看图 (打包流程)</p>
+</blockquote>
+</li>
+<li><p><strong><em>code 记得保存一份</em></strong></p>
+</li>
+</ol>
+<h2 id="webpack-">webpack 第二阶段</h2>
+<h3 id="webpack-">webpack 配置文件</h3>
+<ol>
+<li>准备工作 : <code>src</code>源文件 : <code>index.html</code>和<code>main.js</code></li>
+<li>webpack 打包有两种方式<blockquote>
+<p>1-命令行 2-配置项</p>
+</blockquote>
+</li>
+<li>方式 1 : 命令行</li>
+</ol>
+<pre><code class="lang-js">*    &quot;build&quot;  : &quot;webpack ./mian.js&quot; --mode development
+*     npm run build
+*   一般情况下 : 改为
+*     &quot;build&quot; : 入口  --output 出口
+*     &quot;build&quot;: &quot;webpack ./src/js/main.js --output ./dist/bundle.js  --mode development&quot;,
+*
+*     验证 : index.html 引入 bundle.js
+</code></pre>
+<ol start="4">
+<li>方式 2 : 配置项</li>
+</ol>
+<pre><code class="lang-js">第一步 : 项目`根目录`下, 创建一个 `webpack.config.js`文件 (文件名固定死)
+         专门指定其他文件 : --config  webpack.XX.js
+第二步 : 在 `webpack.config.js` 中,进行配置
+// webpack 是基于 node的 , 所以配置文件符合 node 方式书写配置
+// 注意 : 不要再这个文件中使用ES6的的模块化 import语法
+// main.js里可以使用,是因为要通过webpack转化为es5的
+// 而这个是webpack 的配置文件,,它是要转化别人的,所以必须要通过
+第三步 : 修改 `package.json` 中的 `scripts` , 脚本命令为： &quot;build&quot;: &quot;webpack&quot;
+第四步 : 执行命令 : `npm run build`
+</code></pre>
+<ol start="5">
+<li>示例代码(webpack.config.js) :</li>
+</ol>
+<pre><code class="lang-js">const path = require(&#39;path&#39;)
+
+module.exports = {
+  // 入口
+  entry: path.join(__dirname, &#39;./src/js/main.js&#39;),
+  // 出口
+  output: {
+    // 出口目录
+    path: path.join(__dirname, &#39;./dist&#39;),
+    filename: &#39;bundle.js&#39;
+  },
+  // 开发模式
+  mode: &#39;development&#39;
+}
+</code></pre>
+<h3 id="webpack-html-webpack-plugin">webpack 配置文件 html-webpack-plugin</h3>
+<ol>
+<li>html-webpack-plugin 必备的插件</li>
+</ol>
+<pre><code class="lang-js">作用 :
+  1. 能够根据指定的模板文件 (index.html),自动生成一个新的 index.html,并且注入到dist文件夹下
+  2. 能够自动引入js文件
+</code></pre>
+<ol>
+<li>安装 : <code>npm i html-webpack-plugin</code></li>
+<li>配置 :</li>
+</ol>
+<pre><code class="lang-js">第一步: 引入模块
+const htmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;)
+第二步: 配置
+// 插件
+plugins: [
+  // 使用插件 指定模板
+  new htmlWebpackPlugin({
+    template: path.join(__dirname, &#39;./src/index.html&#39;)
+  })
+]
+</code></pre>
+<h3 id="webpack-webpack-dev-server">webpack 配置文件 : webpack-dev-server</h3>
+<ol>
+<li><strong>webpack-dev-server</strong> 使用 webpack 必备的功能(插件)</li>
+</ol>
+<blockquote>
+<p>作用 : 为使用 webpack 打包提供一个服务器环境</p>
+</blockquote>
+<ul>
+<li>1.1 自动为我们的项目创建一个服务器</li>
+<li>1.2 自动打开浏览器</li>
+<li><p>1.3 自动监视文件变化,自动刷新浏览器...</p>
+</li>
+<li><p>使用步骤 :</p>
+</li>
+<li><p>2.1 安装 : <code>npm i -D webpack-dev-server</code></p>
+</li>
+<li><p>2.2 两种使用方式: 1-命令行 2-配置文件(推荐)</p>
+</li>
+<li><p>方式 1 : 命令行配置</p>
+</li>
+<li><p>脚本 : <code>&quot;dev&quot; : &quot;webpack-dev-server&quot;</code></p>
+</li>
+<li>运行到 <code>npm run dev</code></li>
+<li>查看路径 : &quot;<a href="http://localhost:8080/&quot;">http://localhost:8080/&quot;</a></li>
+<li>｢wds｣: Project is running at <a href="http://localhost:8080/">http://localhost:8080/</a></li>
+<li>问题 1 : 自动打开?</li>
+<li>解决 : 添加 <code>--open</code></li>
+<li>问题 2 : 指定端口号</li>
+<li>解决 : 添加 <code>--port 3001</code></li>
+<li>问题 3 : 热更新</li>
+<li>解决 : <code>--hot</code> ( 整个页面和整个项目打包 )</li>
+</ul>
+<pre><code class="lang-js">演示: 在浏览器调试样式的地方去掉ul的样式     /* background: skyblue; */
+然后分别看 加 --hot 和 不加 --hot 的区别
+重新运行脚本
+</code></pre>
+<ol start="4">
+<li>方式 2 : 配置文件配置</li>
+</ol>
+<pre><code class="lang-js">// hot 不要写在配置文件里面,,不然的话还要配其他插件麻烦
+ &quot;dev&quot; : &quot;webpack-dev-server --hot&quot;,
+
+  devServer : {
+    open : true,
+    port : 3001
+  }
+</code></pre>
+<h2 id="webpack-">webpack 第三阶段 打包上线</h2>
+<ol>
+<li>开发模式 : <code>npm run dev</code>    ==&gt; 不会打包的 ,只会把项目放到服务器里</li>
+<li>假设项目开发完成了,要上线,怎么操作?</li>
+</ol>
+<pre><code class="lang-js">2.1 执行 : `npm run build` 对项目进行打包,生成dist文件
+2.2 模拟本地服务器 : 安装 : `npm i -g http-server`
+2.3 把dist文件里的内容放到服务器里即可, 直接运行`http-server`
+</code></pre>
+<h2 id="webpack-js-">webpack 第四阶段 : 打包非js文件</h2>
+<blockquote>
+<p>webpack 只能处理 js 文件,非 js(css.less.图片.字体等)处理处理不了, 借助 loader 加载器</p>
+</blockquote>
+<h3 id="-css-">处理 css 文件</h3>
+<ol>
+<li>创建一个 css 文件, 然后在 <code>main.js</code>中引入 <code>import &#39;../css/index.css&#39;;</code><blockquote>
+<p>ul { style-list : none }</p>
+</blockquote>
+</li>
+<li>安装 : <code>npm i -D style-loader css-loader</code></li>
+<li>在 <code>webpack.config.js</code> 中,添加个新的配置项 <code>module</code></li>
+<li>在 <code>module</code> 中添加 <code>loader</code> 来处理 <code>css</code></li>
+</ol>
+<pre><code class="lang-js">// loader
+module: {
+  rules: [
+    //1.处理 css
+      // 注意点 use执行loader 顺序 从右往左
+      // css-loader  :  读取css文件内容,将其转化为一个模块
+      // style-loader :拿到模块, 创建一个style标签,插入页面中
+    { test: /\.css$/, use: [&#39;style-loader&#39;, &#39;css-loader&#39;] }
+  ]
+}
+</code></pre>
+<h3 id="-less-">处理 less 文件</h3>
+<ol>
+<li>创建一个 less 文件, 然后再 main.js 中 引入 <code>import &#39;../css/index.less&#39;;</code></li>
+<li>安装 : <code>npm i -D less-loader less style-loader css-loader</code></li>
+<li>在 webpack.config.js 中, 配置 <code>module-&gt;rules</code></li>
+<li>在 module 中, 添加 loader 来处理 <code>less</code></li>
+</ol>
+<pre><code class="lang-less">ul {
+  background-color: aqua;
+  li {
+    &amp;:hover {
+      color: yellow;
+    }
+  }
+}
+</code></pre>
+<ol start="5">
+<li><p>配置 : </p>
+<pre><code class="lang-js"> { test :/\.less$/, use : [&#39;style-loader&#39;,&#39;css-loader&#39;,&#39;less-loader&#39;] },
+</code></pre>
+</li>
+</ol>
+<h3 id="-">处理 图片 文件</h3>
+<blockquote>
+<p><div class='cls1'></div>
+设置背景图片</p>
+<p>.cls {</p>
+<p>  width: 300px;</p>
+<p>  height: 300px;</p>
+<p>  background: url(&#39;../css/4.jpg&#39;);</p>
+<p>  background-size: 100%;</p>
+<p>}</p>
+</blockquote>
+<ol>
+<li>安装 : <code>npm i -D url-loader file-loader</code><blockquote>
+<p>url-loader (推荐) 和 file-loader 二选一即可</p>
+</blockquote>
+</li>
+<li>在 webpack.config.js 添加 loader 规则</li>
+</ol>
+<pre><code class="lang-js">// 处理图片
+  { test : /\.(jpg|png)$/, use : [&#39;url-loader&#39;] },
+</code></pre>
+<ol start="3">
+<li><strong>url-loader</strong> 默认会将图片转化为 base64 编码格式, 目的:提高性能</li>
+<li><strong>file-loader</strong> 在车里图片时, 会对文件进行重命名 :</li>
+</ol>
+<pre><code class="lang-js">原始：    background-image: url(../images/1.jpg);
+处理后：  background-image: url(9c9690b56876ea9b4d092c0baef31bb3.jpg);
+</code></pre>
+<ol start="5">
+<li><p><strong>base64 编码格式的图片说明 :</strong></p>
+</li>
+<li><p>精灵图 : 将一些小图片合并为一张图片,减少请求次数,提高性能</p>
+</li>
+<li>字体图标 :直接将一些小的图片,合并到字体文件中,并且不会失真</li>
+<li>base64 : 是一种编码格式,能够将图片、文字等常见的文件,转化为 base64 格式,这种字符串格式, 浏览器能够识别并且读取显示到页面中;</li>
+<li>base64 是一个字符串,也可以直接被内嵌到页面中, 或者 css 中</li>
+<li><p>注意 : 大图片不适合用 base64 处理, 只有小的图标才适合 base64 处理</p>
+</li>
+<li><p>设置配置</p>
+</li>
+</ol>
+<pre><code class="lang-js">方式1 :{ test : /\.(jpg|png)$/, use : [&#39;url-loader?limit=57417&#39;] }, 
+方式2 : 
+{
+        test: /\.(jpg|png)$/, use: [
+          {
+            loader: &#39;url-loader&#39;,
+            options: {
+              //  比57417这个小 =&gt; 转化为base64
+              //  大于等于这个57417值 =&gt; 不会转base64 内部调用 file-loader 加载图片
+              limit: 57417
+            }
+          }
+        ]
+      },
+</code></pre>
+<h3 id="-">处理 字体 文件</h3>
+<ol>
+<li><p>准备字体图标: 字体图标文件 <code>iconfont</code> 或者 从<code>阿里矢量图标</code>里下载</p>
+</li>
+<li><p>拷贝到项目中的 css 文件夹中</p>
+</li>
+<li><p>在 <strong>main.js</strong> 中引入 css 文件</p>
+<pre><code class="lang-js">import &#39;../css/iconfont/iconfont.css&#39;
+</code></pre>
+</li>
+<li><p>使用 : <strong><i class="iconfont icon-zan"></i></strong></p>
+</li>
+<li><p>在 webpack.config.js 中配置</p>
+</li>
+</ol>
+<pre><code class="lang-js"> // 4. 处理字体图标
+  { test:/\.(svg|woff|woff2|ttf|eot)$/,use:&#39;url-loader&#39;}
+</code></pre>
+<h3 id="-es6-">处理 ES6 语法</h3>
+<ol>
+<li>现在的项目都是使用 ES6 开发的, 但是这些新的 ES6 语法, 并不是所有的浏览器都支持, 所以就需要有一个工具,帮我们转成 es5 语法, 这个就是: babel</li>
+<li><a href="https://babeljs.io/">babel</a></li>
+<li>Babel is a JavaScript compiler. ==&gt; babel 是一个 JavaScript 编译器</li>
+<li>webpack 只能处理 import / export 这个 es6 模块化语法
+而其他的 js 新语法,应该使用 babel 来处理</li>
+<li>比如 : <code>var o = { ...obj }</code> 在谷歌上可以,edge 就不可以</li>
+<li><p>babel 的使用 :</p>
+</li>
+<li><p>6.1 安装 1 : <code>npm i -D babel-core babel-loader@7</code></p>
+<ul>
+<li>babel-core 是 babel 的核心包</li>
+<li>babel-loader 加载 js 文件, 并将 js 代码内容交给 babel-core 解析为 es5 低版本的 js</li>
+</ul>
+</li>
+<li>6.2 安装 2 : <code>npm i -D babel-preset-env babel-preset-stage-2</code><ul>
+<li>babel-preset-* 表示能够解析什么版本的 js 语法</li>
+<li>babel-preset-env : 表示能够解析 es2015,es2016,es2017,es2018 这些标准的语法</li>
+<li>babel-preset-stage-2 : 用来解析经过会遇到,但是还没有被采纳为标准的语法</li>
+<li>比如 : &#39;abc&#39;.padStart(10, &#39;6&#39;) : 准备 10 位字符,有 abc,前面不够用 6 补充,是 es2017 的语法,</li>
+<li><code>babel-polyfill与babel-plugin-transform-runtime</code> 也是做兼容处理的,以前都是用这个,兼容更早的</li>
+</ul>
+</li>
+<li>6.3 配置 : 在 webpack.config.js 中添加一个 loader</li>
+</ol>
+<pre><code class="lang-js">  { test: /\.js$/, use: &#39;babel-loader&#39;, exclude: /node_modules/ }
+</code></pre>
+<ul>
+<li>6.4 在项目根目录中创建 babel 的配置文件，叫：<code>.babelrc</code></li>
+</ul>
+<pre><code class="lang-js">  {
+  &quot;presets&quot;: [
+    &quot;env&quot;,
+    &quot;stage-2&quot;
+  ],
+
+  -----------
+  // 暂时不用
+  // 如果未来某一天真的用到了polify
+    &quot;plugins&quot;: [
+        [&quot;transform-runtime&quot;, {
+                &quot;helpers&quot;: false,
+                &quot;polyfill&quot;: true,
+                &quot;regenerator&quot;: true,
+                &quot;moduleName&quot;: &quot;babel-runtime&quot;
+    }]
+</code></pre>
+<ul>
+<li>6.5 测试 : 谷歌 和 edge</li>
+</ul>
+<pre><code class="lang-js">var obj = {
+  name: &#39;zs&#39;,
+  age: 20
+}
+
+var o = { ...obj }
+console.log(o)
+</code></pre>
+<h3 id="webpack-https-www-webpackjs-com-loaders-url-loader">webpack中文链接 : <a href="https://www.webpackjs.com/loaders/url-loader">https://www.webpackjs.com/loaders/url-loader</a></h3>
+</article>
+  </div>
+</body>
+</html>
+<script type="text/javascript" src="lib/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="lib/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="lib/js/ztree_toc.min.js"></script>
+<script type="text/javascript" src="lib/js/toc_conf.js"></script>
+<script src="lib/js/highlight.min.js"></script>
+<script>
+  $(document).ready(function () {
+    // 代码高亮的js代码
+    hljs.initHighlightingOnLoad();
+
+    //生成侧边栏的代码
+    var css_conf = eval(markdown_panel_style);
+    $('#readme').css(css_conf)
+
+    var conf = eval(jquery_ztree_toc_opts);
+    $('#tree').ztree_toc(conf);
+  });
+</script>
