@@ -1,0 +1,501 @@
+body {
+  background-color: #fff;
+  color: #000;
+  font-family: Arial;
+  font-size: 14px;
+  margin: 0;
+}
+a {
+  color: #008;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+a.mode,
+footer a {
+  color: #00f;
+}
+header {
+  margin: 20px 0 0 0;
+}
+#header_inner {
+  background-color: #edd;
+  border: 1px solid #800;
+}
+#menu_inner {
+  background-color: #eed;
+  border: 1px solid #880;
+}
+#article_inner {
+  background-color: #ded;
+  border: 1px solid #080;
+}
+#aside_inner {
+  background-color: #dee;
+  border: 1px solid #088;
+}
+footer {
+  clear: both;
+  margin: 0 0 20px 0;
+}
+#footer_inner {
+  background-color: #dde;
+  border: 1px solid #008;
+}
+#header_inner,
+#menu_inner,
+#article_inner,
+#aside_inner,
+#footer_inner {
+  padding: 1px 20px;
+}
+header h1 {
+  display: none;
+}
+.adaptive header h1#header_adaptive,
+.liquid header h1#header_liquid,
+.responsive header h1#header_responsive,
+.static header h1#header_static {
+  display: block;
+}
+#overview {
+  border-top: 1px solid #080;
+  border-bottom: 1px solid #080;
+  zoom: 1;
+}
+#overview:after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+#overview h1 {
+  display: none;
+}
+#overview p {
+  display: none;
+}
+#overview img {
+  display: none;
+  float: left;
+  margin: 20px 20px 20px 0;
+  width: 110px;
+}
+.adaptive #overview .overview_adaptive,
+.liquid #overview .overview_liquid,
+.responsive #overview .overview_responsive,
+.static #overview .overview_static {
+  display: block;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 20px 0;
+}
+.block {
+  clear: both;
+  margin: 20px 0;
+  zoom: 1;
+}
+.block:after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+.block h3 {
+  margin: 0;
+}
+.block p {
+  margin: 0 0 20px 0;
+}
+.block p.meta {
+  color: #888;
+  font-size: 80%;
+  margin: 0;
+}
+.adaptive header,
+.responsive header {
+  margin: 20px 0 0 0;
+  padding: 0;
+  position: relative;
+}
+@media all and (max-width: 719px) {
+  .adaptive header select,
+  .responsive header select {
+      display: block;
+      margin-bottom: 20px;
+      width: 100%;
+  }
+}
+@media all and (min-width: 720px) {
+  .adaptive header select,
+  .responsive header select {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+  }
+}
+.adaptive menu,
+.adaptive article,
+.adaptive aside,
+.adaptive footer,
+.responsive menu,
+.responsive article,
+.responsive aside,
+.responsive footer {
+  margin: 20px 0;
+  padding: 0;
+}
+@media all and (max-width: 719px) {
+  .adaptive #overview #layout_1,
+  .responsive #overview #layout_1 {
+      display: block;
+  }
+}
+@media all and (min-width: 720px) and (max-width: 959px) {
+  .adaptive menu,
+  .responsive menu {
+      clear: left;
+      float: left;
+      width: 24.9%;
+  }
+  .adaptive article,
+  .responsive article {
+      clear: none;
+      float: left;
+      margin: 20px 0;
+      width: 75%;
+  }
+  .adaptive article #article_inner,
+  .responsive article #article_inner {
+      margin: 0 0 0 20px;
+  }
+  .adaptive aside,
+  .responsive aside {
+      clear: both;
+      float: none;
+      width: 100%;
+  }
+  .adaptive #overview #layout_2,
+  .responsive #overview #layout_2 {
+      display: block;
+  }
+}
+@media all and (min-width: 960px) {
+  .adaptive menu,
+  .responsive menu {
+      clear: left;
+      float: left;
+      width: 17.5%;
+  }
+  .adaptive article,
+  .responsive article {
+      clear: none;
+      float: left;
+      margin: 20px 0;
+      width: 64.9%;
+  }
+  .adaptive article #article_inner,
+  .responsive article #article_inner {
+      margin: 0 20px;
+  }
+  .adaptive aside,
+  .responsive aside {
+      clear: none;
+      float: right;
+      width: 17.5%;
+  }
+  .adaptive #overview #layout_3,
+  .responsive #overview #layout_3 {
+      display: block;
+  }
+}
+.adaptive menu ul,
+.responsive menu ul {
+  margin: 20px 0;
+  padding: 0;
+}
+.adaptive menu ul li,
+.responsive menu ul li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.adaptive menu ul li ul,
+.responsive menu ul li ul {
+  margin: 0 0 0 40px;
+}
+.adaptive article .block img,
+.responsive article .block img {
+  clear: left;
+  float: left;
+  width: 20%;
+  zoom: 1;
+}
+.adaptive article .block .block_content,
+.responsive article .block .block_content {
+  clear: right;
+  margin-left: 20.1%;
+}
+.adaptive article .block .block_content h3,
+.adaptive article .block .block_content p,
+.adaptive article .block .block_content a,
+.responsive article .block .block_content h3,
+.responsive article .block .block_content p,
+.responsive article .block .block_content a {
+  margin-left: 20px;
+}
+.adaptive article .block p.summary,
+.responsive article .block p.summary {
+  display: none;
+}
+.adaptive aside .block img,
+.responsive aside .block img {
+  display: none;
+}
+.adaptive aside .block p.main,
+.responsive aside .block p.main {
+  display: none;
+}
+@media all and (min-width: 720px) and (max-width: 959px) {
+  .adaptive aside .block img,
+  .responsive aside .block img {
+      clear: left;
+      display: block;
+      float: left;
+      width: 20%;
+      zoom: 1;
+  }
+  .adaptive aside .block .block_content,
+  .responsive aside .block .block_content {
+      clear: right;
+      margin-left: 20.1%;
+  }
+  .adaptive aside .block .block_content h3,
+  .adaptive aside .block .block_content p,
+  .adaptive aside .block .block_content a,
+  .responsive aside .block .block_content h3,
+  .responsive aside .block .block_content p,
+  .responsive aside .block .block_content a {
+      margin-left: 20px;
+  }
+  .adaptive aside .block p.summary,
+  .responsive aside .block p.summary {
+      display: none;
+  }
+  .adaptive aside .block p.main,
+  .responsive aside .block p.main {
+      display: block;
+  }
+}
+@media all and (max-width: 719px) {
+  .adaptive aside .block img,
+  .responsive aside .block img {
+      clear: left;
+      display: block;
+      float: left;
+      width: 20%;
+      zoom: 1;
+  }
+  .adaptive aside .block .block_content,
+  .responsive aside .block .block_content {
+      clear: right;
+      margin-left: 20.1%;
+  }
+  .adaptive aside .block .block_content h3,
+  .adaptive aside .block .block_content p,
+  .adaptive aside .block .block_content a,
+  .responsive aside .block .block_content h3,
+  .responsive aside .block .block_content p,
+  .responsive aside .block .block_content a {
+      margin-left: 20px;
+  }
+}
+.adaptive #page_wrapper {
+  margin: 0 auto;
+}
+@media all and (max-width: 479px) {
+  .adaptive #page_wrapper {
+      width: 280px;
+  }
+}
+@media all and (min-width: 480px) and (max-width: 719px) {
+  .adaptive #page_wrapper {
+      width: 440px;
+  }
+}
+@media all and (min-width: 720px) and (max-width: 959px) {
+  .adaptive #page_wrapper {
+      width: 680px;
+  }
+}
+@media all and (min-width: 960px) and (max-width: 1279px) {
+  .adaptive #page_wrapper {
+      width: 920px;
+  }
+}
+@media all and (min-width: 1280px) {
+  .adaptive #page_wrapper {
+      width: 1240px;
+  }
+}
+.liquid #page_wrapper {
+  margin: 0 20px;
+}
+.liquid header,
+.liquid footer {
+  clear: both;
+  width: 100%;
+}
+.liquid header {
+  padding: 0;
+  position: relative;
+}
+.liquid header select {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+.liquid menu {
+  clear: left;
+  float: left;
+  margin: 20px 0;
+  padding: 0;
+  width: 17.5%;
+}
+.liquid menu ul {
+  margin: 20px 0;
+  padding: 0;
+}
+.liquid menu ul li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.liquid menu ul li ul {
+  margin: 0 0 0 20%;
+}
+.liquid article {
+  clear: none;
+  float: left;
+  margin: 20px 0;
+  width: 64.9%;
+}
+.liquid article #article_inner {
+  margin: 0 20px;
+}
+.liquid article .block img {
+  clear: left;
+  float: left;
+  width: 20%;
+  zoom: 1;
+}
+.liquid article .block .block_content {
+  clear: right;
+  margin-left: 20.1%;
+}
+.liquid article .block .block_content h3,
+.liquid article .block .block_content p,
+.liquid article .block .block_content a {
+  margin-left: 20px;
+}
+.liquid article .block p.summary {
+  display: none;
+}
+.liquid #overview #layout_3 {
+  display: block;
+}
+.liquid aside {
+  clear: right;
+  float: right;
+  margin: 20px 0;
+  padding: 0;
+  width: 17.5%;
+}
+.liquid aside .block img {
+  display: none;
+}
+.liquid aside .block p.main {
+  display: none;
+}
+.responsive #page_wrapper {
+  margin: 0 20px;
+}
+.static #page_wrapper {
+  margin: 0 auto;
+  width: 960px;
+}
+.static header {
+  padding: 0;
+  position: relative;
+}
+.static header select {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+.static menu,
+.static aside {
+  clear: none;
+  float: left;
+  margin: 20px 0;
+  padding: 0;
+  width: 200px;
+  zoom: 1;
+}
+.static aside {
+  float: right;
+}
+.static menu ul {
+  margin: 20px 0;
+  padding: 0;
+}
+.static menu ul li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.static menu ul li ul {
+  margin: 0 0 0 40px;
+}
+.static article {
+  clear: none;
+  float: left;
+  margin: 20px;
+  padding: 0;
+  width: 520px;
+}
+.static article .block img {
+  clear: left;
+  float: left;
+  width: 120px;
+  zoom: 1;
+}
+.static article .block .block_content {
+  clear: right;
+  margin-left: 140px;
+}
+.static article .block p.summary {
+  display: none;
+}
+.static #overview #layout_3 {
+  display: block;
+}
+.static aside .block img {
+  display: none;
+}
+.static aside .block p.main {
+  display: none;
+}
+.static footer {
+  clear: both;
+  padding: 0;
+}
